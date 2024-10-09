@@ -5,7 +5,9 @@ This is a quick little quality of life type of hta to make it easier to load and
 ReadMe.txt provides instrucrtions on what variables need to be changed.
 
 Nexus mods I use:
+
 https://www.nexusmods.com/remnant2/mods/2
+
 https://www.nexusmods.com/remnant2/mods/122
 
 Here is my command console sheet I use for AAM:
