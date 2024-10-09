@@ -21,7 +21,7 @@
 
 5. Edit the Remnant II HTA.hta
 	Line 11 modsOffPath = Full filepath to the MODS OFF.bat
-    Line 12 modsOnPath = Full filepath to the MODS ON.bat
-    Line 13 revertSavesPath = Full filepath to the RevertSaves.bat
-    Line 14 backupSavesPath = Full filepath to the BackupSaves.bat
-    Line 15 modCheckPath = Full filepath to the Binaries\Win64\UE4SS.dll
+    	Line 12 modsOnPath = Full filepath to the MODS ON.bat
+    	Line 13 revertSavesPath = Full filepath to the RevertSaves.bat
+    	Line 14 backupSavesPath = Full filepath to the BackupSaves.bat
+    	Line 15 modCheckPath = Full filepath to the Binaries\Win64\UE4SS.dll
