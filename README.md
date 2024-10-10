@@ -8,7 +8,9 @@ Turning mods ON and OFF requires the change to be done BEFORE the game is launch
 
 
 Instructions:
+
 Download and unzip the RemnantIIHTAtool
+
 Run the Remnant 2 Mods Setup.hta
 
 ![image](https://github.com/user-attachments/assets/8f2c8784-2db3-4863-b307-a762b737d006)
@@ -28,6 +30,11 @@ Click Install Mods button
 Answer if you want a shortcut on your desktop or not
 
 ![image](https://github.com/user-attachments/assets/64ac5381-ea36-41c2-994f-71a69d35e04d)
+
+Launch the Remnant II HTA either from the Mods folder in your Remnant II game folder or from the shortcut you opted for on your desktop
+
+![image](https://github.com/user-attachments/assets/06ebe776-c315-4b9e-bd07-d0c57f85781a)
+
 
 
 
