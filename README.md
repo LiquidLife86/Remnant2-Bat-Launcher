@@ -42,7 +42,11 @@ Launch the Remnant II HTA either from the Mods folder in your Remnant II game fo
 
 Nexus mods I use:
 
+AAM:
+
 https://www.nexusmods.com/remnant2/mods/2
+
+Summon Traits:
 
 https://www.nexusmods.com/remnant2/mods/122
 
