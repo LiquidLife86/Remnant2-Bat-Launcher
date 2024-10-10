@@ -6,7 +6,19 @@ Turning mods ON and OFF requires the change to be done BEFORE the game is launch
 
 ![image](https://github.com/user-attachments/assets/29ef6353-ad1b-47fa-89ba-da1bda993bc9)
 
-ReadMe.txt provides instrucrtions on what variables need to be changed.
+Instructions:
+Download and unzip the RemnantIIHTAtool
+run the Remnant 2 Mods Setup.hta
+![image](https://github.com/user-attachments/assets/8f2c8784-2db3-4863-b307-a762b737d006)
+Click Select Game Folder and select the Remnant II game folder that has the Remnant2.exe in it
+![image](https://github.com/user-attachments/assets/2ea07514-839f-4aa8-9efe-89b47a82b9f3)
+Click Select Game Save Folder and select the folder that your Remnant II game save is in (ex: C:\Users\%UserName%\Saved Games\Remnant2\Steam\#########) and a initial backup of your game saves will be taken
+![image](https://github.com/user-attachments/assets/50ad933e-6b53-431f-be9c-4fc9a635b4a5)
+Click Install Mods button
+![image](https://github.com/user-attachments/assets/e54518df-a934-4b45-a2b1-ad45b09f67fa)
+
+
+
 
 Nexus mods I use:
 
