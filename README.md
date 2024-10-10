@@ -20,6 +20,8 @@ Click Install Mods button
 
 ![image](https://github.com/user-attachments/assets/e54518df-a934-4b45-a2b1-ad45b09f67fa)
 
+Answer if you want a shortcut on your desktop or not
+![image](https://github.com/user-attachments/assets/64ac5381-ea36-41c2-994f-71a69d35e04d)
 
 
 
