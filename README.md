@@ -4,7 +4,7 @@ This is a quick little quality of life type of hta to make it easier to load and
 
 YOU MUST HAVE AAM AT A MINIMUM TO USE THIS!
 
-Turning mods ON and OFF requires the change to be done BEFORE the game is launched.
+To turn on the mods just click the Mods ON button and to turn them off just click the Mods OFF button. The tool will check every 10 seconds if the mods are enabled or not to show you the current state by the checked button. Turning mods ON and OFF requires the change to be done BEFORE the game is launched. Backup Saves will backup the current game saves to the - Backup folder and Revert Saves will delete the game saves and restore the ones from the - Backup folder.
 
 ![image](https://github.com/user-attachments/assets/3ad4db1f-6287-4ab4-92b6-22571b243942)
 
