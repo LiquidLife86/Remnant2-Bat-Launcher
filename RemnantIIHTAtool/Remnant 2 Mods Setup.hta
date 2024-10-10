@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Remnant 2 Mods Setup</title>
+    <hta:application 
+        id="Remnant2ModsSetup" 
+        border="thin" 
+        caption="yes" 
+        maximizeButton="no" 
+        minimizeButton="no" 
+        sysmenu="yes" 
+        scroll="no" 
+        singleinstance="yes"
+        windowstate="normal"
+    />
+    <script type="text/javascript">
+        var gameFolderPath = "";
+        var saveFolderPath = "";
+        var backupFolderPath = "";
+
+        function setWindowSize() {
+            window.resizeTo(600, 600); // Set window size to 500x400 pixels
+			document.getElementById("shortcutPrompt").style.display = "none";  // Hide the shortcut prompt on load
+        }
+
+        function pickGameFolder() {
+            try {
+                var shell = new ActiveXObject("Shell.Application");
+                var folder = shell.BrowseForFolder(0, "Select Remnant 2 Game Folder", 0x0011);
+                
+                if (folder != null) {
+                    gameFolderPath = folder.items().item().Path;
+                    document.getElementById("gamePath").innerText = "Selected Game Folder: " + gameFolderPath;
+
+                    var fso = new ActiveXObject("Scripting.FileSystemObject");
+                    if (fso.FileExists(gameFolderPath + "\\Remnant2.exe")) {
+                        document.getElementById("gamePath").style.color = "lime"; // Change text color to lime green
+                    } else {
+                        document.getElementById("gamePath").style.color = "red"; // Change text color to red
+                        document.getElementById("status").innerText += "\nError: Remnant2.exe not found in the selected folder.";
+                        return;
+                    }
+
+                    document.getElementById("selectGameButton").style.display = "none";
+                    document.getElementById("nextButton").style.display = "block";
+                } else {
+                    document.getElementById("gamePath").innerText = "No game folder selected.";
+                }
+            } catch (e) {
+                document.getElementById("status").innerText = "Error at pickGameFolder: " + e.message;
+            }
+        }
+
+        function pickSaveFolder() {
+            try {
+                var shell = new ActiveXObject("Shell.Application");
+                var folder = shell.BrowseForFolder(0, "Select Remnant 2 Game Save Folder", 0x0011);
+                
+                if (folder != null) {
+                    saveFolderPath = folder.items().item().Path;
+                    document.getElementById("savePath").innerText = "Selected Save Folder: " + saveFolderPath;
+
+                    var saveFolderName = saveFolderPath.split('\\').pop();
+                    if (saveFolderName.length === 9 && /^\d+$/.test(saveFolderName)) {
+                        document.getElementById("savePath").style.color = "lime";
+                    } else {
+                        document.getElementById("savePath").style.color = "red";
+                        document.getElementById("status").innerText += "\nError: Save folder name must be 9 digits long.";
+                        return;
+                    }
+
+                    document.getElementById("nextButton").style.display = "none";
+                    document.getElementById("installButton").style.display = "block";
+
+                    backupSaveFolder();
+                } else {
+                    document.getElementById("savePath").innerText = "No save folder selected.";
+                }
+            } catch (e) {
+                document.getElementById("status").innerText = "Error at pickSaveFolder: " + e.message;
+            }
+        }
+
+        function backupSaveFolder() {
+            try {
+                var fso = new ActiveXObject("Scripting.FileSystemObject");
+                var saveFolderName = fso.GetFolder(saveFolderPath).Name;
+                backupFolderPath = saveFolderPath + " - Backup"
+
+                if (!fso.FolderExists(backupFolderPath)) {
+                    fso.CopyFolder(saveFolderPath, backupFolderPath);
+                    document.getElementById("status").innerText = "Backup created at: " + backupFolderPath;
+                } else {
+                    document.getElementById("status").innerText = "Backup folder already exists.";
+                }
+
+            } catch (e) {
+                document.getElementById("status").innerText = "Error at backupSaveFolder: " + e.message;
+            }
+        }
+
+        function createModsFolderAndCopyFiles() {
+			try {
+				var fso = new ActiveXObject("Scripting.FileSystemObject");
+				var currentDirPath = fso.GetAbsolutePathName("."); // Get the current directory of the HTA
+				var sourceModsFolderPath = currentDirPath + "\\Mods";
+				var destinationModsFolderPath = gameFolderPath + "\\Mods";
+
+				// Check if the source Mods folder exists
+				if (!fso.FolderExists(sourceModsFolderPath)) {
+					document.getElementById("status").innerText += "\nError: Mods folder not found in " + currentDirPath;
+					return;
+				}
+
+				// Copy the folder if it doesn't already exist in the destination
+				if (!fso.FolderExists(destinationModsFolderPath)) {
+					fso.CopyFolder(sourceModsFolderPath, destinationModsFolderPath);
+					document.getElementById("status").innerText += "\nCopied Mods folder to: " + destinationModsFolderPath;
+				} else {
+					document.getElementById("status").innerText += "\nMods folder already exists in the game directory.";
+				}
+				
+				editRevertSaves(destinationModsFolderPath);
+                editBackupSaves(destinationModsFolderPath);
+                editModsOff(destinationModsFolderPath);
+                editModsOn(destinationModsFolderPath);
+                editRemnantHTAFile();  // Shortcut prompt will be shown after this completes
+
+				blockInstallButton();
+
+			} catch (e) {
+				document.getElementById("status").innerText = "Error at createModsFolderAndCopyFiles: " + e.message;
+			}
+		}
+
+
+
+        function editRevertSaves(path) {
+            try {
+                var fso = new ActiveXObject("Scripting.FileSystemObject");
+                var revertSavesPath = path + "\\BATs" + "\\RevertSaves.bat";
+
+                if (fso.FileExists(revertSavesPath)) {
+                    var file = fso.OpenTextFile(revertSavesPath, 1);  // 1 = ForReading
+                    var content = file.ReadAll();
+                    file.Close();
+
+                    content = content.replace(/SET\s+destDir\s*=\s*.*/i, 'SET destDir="' + saveFolderPath + '"');
+                    content = content.replace(/SET\s+backupDir\s*=\s*.*/i, 'SET backupDir="' + backupFolderPath + '"');
+					
+                    var fileWrite = fso.OpenTextFile(revertSavesPath, 2);  // 2 = ForWriting
+                    fileWrite.Write(content);
+                    fileWrite.Close();
+
+                    document.getElementById("status").innerText += "\nUpdated RevertSaves.bat.";
+                } else {
+                    document.getElementById("status").innerText += "\nError: RevertSaves.bat not found.";
+                }
+            } catch (e) {
+                document.getElementById("status").innerText = "Error editing RevertSaves.bat: " + e.message;
+            }
+        }
+
+        function editBackupSaves(path) {
+            try {
+                var fso = new ActiveXObject("Scripting.FileSystemObject");
+                var backupSavesPath = path + "\\BATs" + "\\BackupSaves.bat";
+
+                if (fso.FileExists(backupSavesPath)) {
+                    var file = fso.OpenTextFile(backupSavesPath, 1);
+                    var content = file.ReadAll();
+                    file.Close();
+
+                    content = content.replace(/SET\s+backupDir\s*=\s*.*/i, 'SET backupDir="' + saveFolderPath + '"');
+                    content = content.replace(/SET\s+destDir\s*=\s*.*/i, 'SET destDir="' + backupFolderPath + '"');
+
+                    var fileWrite = fso.OpenTextFile(backupSavesPath, 2);
+                    fileWrite.Write(content);
+                    fileWrite.Close();
+
+                    document.getElementById("status").innerText += "\nUpdated BackupSaves.bat.";
+                } else {
+                    document.getElementById("status").innerText += "\nError: BackupSaves.bat not found.";
+                }
+            } catch (e) {
+                document.getElementById("status").innerText = "Error editing BackupSaves.bat: " + e.message;
+            }
+        }
+
+        function editModsOff(path) {
+            try {
+                var fso = new ActiveXObject("Scripting.FileSystemObject");
+                var modsOffPath = path + "\\BATs" + "\\MODS OFF.bat";
+
+                if (fso.FileExists(modsOffPath)) {
+                    var file = fso.OpenTextFile(modsOffPath, 1);
+                    var content = file.ReadAll();
+                    file.Close();
+
+                    content = content.replace(/SET\s+source\s*=\s*.*/i, 'SET source="' + gameFolderPath + "\\Remnant2\\Binaries\\Win64" + '"');
+                    content = content.replace(/SET\s+destination\s*=\s*.*/i, 'SET destination="' + gameFolderPath + "\\Mods\\UE4SS" + '"');
+
+                    var fileWrite = fso.OpenTextFile(modsOffPath, 2);
+                    fileWrite.Write(content);
+                    fileWrite.Close();
+
+                    document.getElementById("status").innerText += "\nUpdated MODS OFF.bat.";
+                } else {
+                    document.getElementById("status").innerText += "\nError: MODS OFF.bat not found.";
+                }
+            } catch (e) {
+                document.getElementById("status").innerText = "Error editing MODS OFF.bat: " + e.message;
+            }
+        }
+
+        function editModsOn(path) {
+            try {
+                var fso = new ActiveXObject("Scripting.FileSystemObject");
+                var modsOnPath = path + "\\BATs" + "\\MODS ON.bat";
+
+                if (fso.FileExists(modsOnPath)) {
+                    var file = fso.OpenTextFile(modsOnPath, 1);
+                    var content = file.ReadAll();
+                    file.Close();
+
+                    content = content.replace(/SET\s+destination\s*=\s*.*/i, 'SET destination="' + gameFolderPath + "\\Remnant2\\Binaries\\Win64" + '"');
+                    content = content.replace(/SET\s+source\s*=\s*.*/i, 'SET source="' + gameFolderPath + "\\Mods\\UE4SS" + '"');
+
+                    var fileWrite = fso.OpenTextFile(modsOnPath, 2);
+                    fileWrite.Write(content);
+                    fileWrite.Close();
+
+                    document.getElementById("status").innerText += "\nUpdated MODS ON.bat.";
+                } else {
+                    document.getElementById("status").innerText += "\nError: MODS ON.bat not found.";
+                }
+            } catch (e) {
+                document.getElementById("status").innerText = "Error editing MODS ON.bat: " + e.message;
+            }
+        }
+
+        function editRemnantHTAFile() {
+			try {
+				var fso = new ActiveXObject("Scripting.FileSystemObject");
+				var remnantHTAPath = gameFolderPath + "\\Mods\\Remnant II HTA.hta";
+
+				if (fso.FileExists(remnantHTAPath)) {
+					var file = fso.OpenTextFile(remnantHTAPath, 1);
+					var content = file.ReadAll();
+					file.Close();
+
+					// Updated regex to replace paths correctly
+					content = content.replace(/modsOffPath\s*=\s*".*?"/i, 'modsOffPath="' + gameFolderPath + "\\Mods\\BATs\\MODS OFF.bat" + '"');
+					content = content.replace(/modsOnPath\s*=\s*".*?"/i, 'modsOnPath="' + gameFolderPath + "\\Mods\\BATs\\MODS ON.bat" + '"');
+					content = content.replace(/revertSavesPath\s*=\s*".*?"/i, 'revertSavesPath="' + gameFolderPath + "\\Mods\\BATs\\RevertSaves.bat" + '"');
+					content = content.replace(/backupSavesPath\s*=\s*".*?"/i, 'backupSavesPath="' + gameFolderPath + "\\Mods\\BATs\\BackupSaves.bat" + '"');
+					content = content.replace(/modCheckPath\s*=\s*".*?"/i, 'modCheckPath="' + gameFolderPath + "\\Remnant2\\Binaries\\Win64\\UE4SS.dll" + '"');
+
+					var fileWrite = fso.OpenTextFile(remnantHTAPath, 2);
+					fileWrite.Write(content);
+					fileWrite.Close();
+
+					document.getElementById("status").innerText += "\nUpdated Remnant II HTA.hta file.";
+				} else {
+					document.getElementById("status").innerText += "\nError: Remnant II HTA.hta not found.";
+				}
+				showShortcutPrompt();
+				
+			} catch (e) {
+				document.getElementById("status").innerText = "Error editing Remnant II HTA.hta: " + e.message;
+			}
+		}
+		
+		function showShortcutPrompt() {
+            document.getElementById("installButton").style.display = "none";  // Hide install button
+            document.getElementById("shortcutPrompt").style.display = "block";  // Show Yes/No prompt
+        }
+
+        function handleShortcutResponse(createShortcut) {
+            if (createShortcut) {
+                createDesktopShortcut();
+            } else {
+                document.getElementById("status").innerText += "\nShortcut creation skipped.";
+            }
+            document.getElementById("shortcutPrompt").style.display = "none";  // Hide Yes/No prompt after selection
+        }
+
+        function createDesktopShortcut() {
+            try {
+                var shell = new ActiveXObject("WScript.Shell");
+                var desktopPath = shell.SpecialFolders("Desktop");
+                var shortcut = shell.CreateShortcut(desktopPath + "\\Remnant II HTA.lnk");
+
+                shortcut.TargetPath = gameFolderPath + "\\Mods\\Remnant II HTA.hta";
+                shortcut.Description = "Shortcut to Remnant II HTA";
+                shortcut.WorkingDirectory = gameFolderPath + "\\Mods";
+                shortcut.Save();
+
+                document.getElementById("status").innerText += "\nShortcut created on the desktop.";
+            } catch (e) {
+                document.getElementById("status").innerText = "Error creating desktop shortcut: " + e.message;
+            }
+        }
+
+        function blockInstallButton() {
+            document.getElementById("installButton").disabled = true;
+        }
+
+        window.onload = function() {
+            setWindowSize(); // Call the function to resize the window when the HTA loads
+        };
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px 0;
+            cursor: pointer;
+            background-color: #2980b9;
+            color: #ecf0f1;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <h1>Remnant 2 Mods Setup</h1>
+	<h2>By Liquid_Life_86</h2>
+    <div>
+        <button id="selectGameButton" onclick="pickGameFolder()">Select Game Folder</button>
+        <button id="nextButton" onclick="pickSaveFolder()" style="display:none;">Select Game Save Folder</button>
+        <button id="installButton" onclick="createModsFolderAndCopyFiles()" style="display:none;">Install Mods</button>
+    </div>
+    <div id="shortcutPrompt">
+        <p>Do you want to create a shortcut to Remnant II HTA on your desktop?</p>
+        <button onclick="handleShortcutResponse(true)">Yes</button>
+        <button onclick="handleShortcutResponse(false)">No</button>
+    </div>
+    <div>
+        <p id="gamePath">Selected Game Folder: None</p>
+        <p id="savePath">Selected Save Folder: None</p>
+        <p id="status"></p>
+    </div>
+</body>
+</html>

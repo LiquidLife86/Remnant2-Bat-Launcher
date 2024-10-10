@@ -1,0 +1,121 @@
+<html>
+<head>
+    <title>Remnant II Easy Modding</title>
+    <hta:application id="RemnantIILauncher" border="thin" scroll="no" singleinstance="yes"
+                     maximizebutton="no" minimizebutton="no" sysmenu="yes"
+                     caption="yes" navigable="no" showintaskbar="yes" innerborder="no"/>
+
+    <script type="text/vbscript">
+        ' Define the paths to the batch files
+        Dim modsOffPath, modsOnPath, revertSavesPath, backupSavesPath, modCheckPath
+        modsOffPath = "F:\Games\RemnantII\MODS OFF.bat"
+        modsOnPath = "F:\Games\RemnantII\MODS ON.bat"
+        revertSavesPath = "F:\Games\RemnantII\RevertSaves.bat"
+        backupSavesPath = "F:\Games\RemnantII\BackupSaves.bat"
+        modCheckPath = "F:\Games\RemnantII\Remnant2\Binaries\Win64\UE4SS.dll"
+
+        ' Create the shell and file system objects
+        Dim shell, fso
+        Set shell = CreateObject("WScript.Shell")
+        Set fso = CreateObject("Scripting.FileSystemObject")
+
+        ' Function to check if the mods are on (if UE4SS.dll exists)
+        Sub CheckModStatus()
+            If fso.FileExists(modCheckPath) Then
+                document.getElementById("modOnRadio").checked = True
+            Else
+                document.getElementById("modOffRadio").checked = True
+            End If
+        End Sub
+
+        ' Function to run mod-related batch files immediately upon selecting a radio button
+        Sub RunBatch()
+            ' Check which radio button is selected
+            If document.getElementById("modOffRadio").checked Then
+                shell.Run Chr(34) & modsOffPath & Chr(34), 0
+            ElseIf document.getElementById("modOnRadio").checked Then
+                shell.Run Chr(34) & modsOnPath & Chr(34), 0
+            End If
+        End Sub
+
+        ' Function to run Revert Saves
+        Sub RevertSaves()
+            shell.Run Chr(34) & revertSavesPath & Chr(34), 0
+        End Sub
+
+        ' Function to run Backup Saves
+        Sub BackupSaves()
+            shell.Run Chr(34) & backupSavesPath & Chr(34), 0
+        End Sub
+
+        ' Function to resize the window to fit the content
+        Sub ResizeWindow()
+            window.resizeTo 350, 300 ' Set width and height here
+        End Sub
+
+        ' Call the mod status check and window resize when the page loads
+        Sub Window_OnLoad()
+            CheckModStatus()
+            StartCountdown() ' Start the countdown when the window loads
+            ResizeWindow()    ' Resize window to fit content
+        End Sub
+    </script>
+
+    <script type="text/javascript">
+        var countdownTime = 10; // Number of seconds before refresh
+
+        // Function to start the countdown and refresh the page
+        function StartCountdown() {
+            UpdateCountdown();
+            var countdownInterval = setInterval(function () {
+                countdownTime--;
+                if (countdownTime <= 0) {
+                    location.reload(); // Reloads the page to check the mod status again
+                }
+                UpdateCountdown();
+            }, 1000);
+        }
+
+        // Function to update the countdown display
+        function UpdateCountdown() {
+            document.getElementById('countdownDisplay').innerText = "Refreshing in " + countdownTime + " seconds...";
+        }
+    </script>
+	<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #2c3e50;
+        color: #ecf0f1;
+        margin: 0;
+        padding: 20px;
+    }
+    button {
+        padding: 10px 20px;
+        margin: 10px 0;
+        cursor: pointer;
+        background-color: #2980b9;
+        color: #ecf0f1;
+        border: none;
+        border-radius: 5px;
+    }
+    button:hover {
+        background-color: #3498db;
+    }
+    </style>
+</head>
+<body onload="Window_OnLoad()">
+    <h3 style="margin-top: 0;">Remnant II Easy Modding</h3>
+	<h3>By Liquid_Life_86</h3>
+    <form style="margin: 0;">
+        <fieldset style="margin-bottom: 10px;">
+            <legend>Mods</legend>
+            <input type="radio" name="modOption" id="modOffRadio" value="modsOff" onclick="RunBatch()"> Mods OFF<br>
+            <input type="radio" name="modOption" id="modOnRadio" value="modsOn" onclick="RunBatch()"> Mods ON<br>
+        </fieldset>
+        <input type="button" value="Revert Saves" onclick="RevertSaves()" style="margin-right: 10px;">
+        <input type="button" value="Backup Saves" onclick="BackupSaves()" style="margin-right: 10px;">
+        <br><br>
+		<div id="countdownDisplay" style="font-size: small;">Refreshing in 10 seconds...</div>
+    </form>
+</body>
+</html>
