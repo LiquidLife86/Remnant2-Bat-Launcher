@@ -1,6 +1,7 @@
 # Remnant2-Bat-Launcher
 
 This is a quick little quality of life type of hta to make it easier to load and unload the files for AAM as well as a quick backup and restore of game saves.
+YOU MUST HAVE AAM AT A MINIMUM TO USE THIS!
 
 Turning mods ON and OFF requires the change to be done BEFORE the game is launched.
 
