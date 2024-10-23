@@ -34,7 +34,7 @@ To turn on the mods just click the Mods ON button and to turn them off just clic
 ![image](https://github.com/user-attachments/assets/64ac5381-ea36-41c2-994f-71a69d35e04d)
 
 
-# **How to use**
+# **How to use:**
 
 Launch the Remnant II HTA either from the Mods folder in your Remnant II game folder or from the shortcut you opted for on your desktop
 
