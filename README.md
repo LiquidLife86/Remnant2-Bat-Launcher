@@ -11,27 +11,30 @@ To turn on the mods just click the Mods ON button and to turn them off just clic
 
 # Instructions:
 
-Download and unzip this RemnantIIHTAtool
+1. Download and unzip this RemnantIIHTAtool
 
-Run the Remnant 2 Mods Setup.hta
+2. Run the Remnant 2 Mods Setup.hta
 
 ![image](https://github.com/user-attachments/assets/8f2c8784-2db3-4863-b307-a762b737d006)
 
-Click Select Game Folder and select the Remnant II game folder that has the Remnant2.exe in it
+3. Click Select Game Folder and select the Remnant II game folder that has the Remnant2.exe in it
 
 ![image](https://github.com/user-attachments/assets/2ea07514-839f-4aa8-9efe-89b47a82b9f3)
 
-Click Select Game Save Folder and select the folder that your Remnant II game save is in (ex: C:\Users\%UserName%\Saved Games\Remnant2\Steam\#########) and a initial backup of your game saves will be taken
+4. Click Select Game Save Folder and select the folder that your Remnant II game save is in (ex: C:\Users\%UserName%\Saved Games\Remnant2\Steam\#########) and a initial backup of your game saves will be taken
 
 ![image](https://github.com/user-attachments/assets/50ad933e-6b53-431f-be9c-4fc9a635b4a5)
 
-Click Install Mods button
+5. Click Install Mods button
 
 ![image](https://github.com/user-attachments/assets/e54518df-a934-4b45-a2b1-ad45b09f67fa)
 
-Answer if you want a shortcut on your desktop or not
+6. Answer if you want a shortcut on your desktop or not
 
 ![image](https://github.com/user-attachments/assets/64ac5381-ea36-41c2-994f-71a69d35e04d)
+
+
+# **How to use**
 
 Launch the Remnant II HTA either from the Mods folder in your Remnant II game folder or from the shortcut you opted for on your desktop
 
