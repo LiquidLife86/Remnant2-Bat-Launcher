@@ -11,7 +11,7 @@ To turn on the mods just click the Mods ON button and to turn them off just clic
 
 # Instructions:
 
-Download and unzip the RemnantIIHTAtool
+Download and unzip this RemnantIIHTAtool
 
 Run the Remnant 2 Mods Setup.hta
 
